@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright (c) 2022
+  ~ David de Andrés and Juan Carlos Ruiz
+  ~ Development of apps for mobile devices
+  ~ Universitat Politècnica de València
+  -->
+
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/mainFragment">
+
+    <!--MainFragment-->
+    <fragment
+        android:id="@+id/mainFragment"
+        android:name="upv.dadm.ex23_sharedpreferences.ui.welcome.MainFragment"
+        android:label="@string/app_name">
+        <action
+            android:id="@+id/action_mainFragment_to_welcomeDialogFragment"
+            app:destination="@id/welcomeDialogFragment" />
+    </fragment>
+    <!--WelcomeDialogFragment-->
+    <dialog
+        android:id="@+id/welcomeDialogFragment"
+        android:name="upv.dadm.ex23_sharedpreferences.ui.welcome.WelcomeDialogFragment"
+        android:label="@string/welcome_title" />
+</navigation>

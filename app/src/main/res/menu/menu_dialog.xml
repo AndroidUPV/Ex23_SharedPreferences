@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright (c) 2022
+  ~ David de Andrés and Juan Carlos Ruiz
+  ~ Development of apps for mobile devices
+  ~ Universitat Politècnica de València
+  -->
+<!--Menu for displaying the initial welcome dialog-->
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <!--Shows the dialog-->
+    <item
+        android:id="@+id/mShowDialog"
+        android:icon="@drawable/ic_show_dialog"
+        android:title="@string/show_dialog"
+        app:showAsAction="ifRoom" />
+    <!--Hides the dialog-->
+    <item
+        android:id="@+id/mHideDialog"
+        android:icon="@drawable/ic_hide_dialog"
+        android:title="@string/hide_dialog"
+        app:showAsAction="ifRoom" />
+</menu>

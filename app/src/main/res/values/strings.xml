@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Ex23_SharedPreferences</string>
+    <!--Strings for the WelcomeDialogFragment-->
+    <string name="welcome_title">Welcome to DataStore app</string>
+    <string name="welcome">Welcome to the DataStore example app.\n\nThis dialog will appear whenever you start the app unless you disable it using the Switch at the bottom of this dialog.</string>
+    <string name="control_switch">Show this dialog at start</string>
+    <!--Strings for the MainFragment-->
+    <string name="help">You can show again the welcome dialog by selecting the corresponding action in the options menu.</string>
+    <!--Strings for the Menu-->
+    <string name="show_dialog">Show dialog</string>
+    <string name="hide_dialog">Hide dialog</string>
+</resources>

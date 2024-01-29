@@ -14,9 +14,11 @@ package upv.dadm.ex23_sharedpreferences.ui.welcome
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import upv.dadm.ex23_sharedpreferences.data.welcome.WelcomeSharedPreferencesRepository
 import javax.inject.Inject
@@ -30,11 +32,21 @@ class WelcomeViewModel @Inject constructor(
     private val welcomeSharedPreferencesRepository: WelcomeSharedPreferencesRepository
 ) : ViewModel() {
 
+    // Backing property for displaying the initial dialog (default empty until initialised)
+    private val _showInitialDialog = MutableStateFlow(false)
+
     // Whether to show or hide the initial dialog
-    val showInitialDialog = flow {
-        val initialDialogVisibility =
-            welcomeSharedPreferencesRepository.getInitialDialogVisibility()
-        emit(initialDialogVisibility)
+    val showInitialDialog = _showInitialDialog.asStateFlow()
+
+    // Initialise the property for displaying the initial dialog
+    init {
+        // As it is a blocking operation it should be executed in a thread
+        viewModelScope.launch {
+            // Get the value from the repository
+            _showInitialDialog.update {
+                welcomeSharedPreferencesRepository.getInitialDialogVisibility()
+            }
+        }
     }
 
     // Whether to show the display or hide option menu

@@ -45,9 +45,9 @@ class MainFragment @Inject constructor() : Fragment(R.layout.fragment_main), Men
         // Add this Fragment as MenuProvider to the MainActivity
         requireActivity().addMenuProvider(this, viewLifecycleOwner, Lifecycle.State.RESUMED)
 
-        // Display the welcome dialog after checking the preferences set by the user
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                // Display the welcome dialog after checking the preferences set by the user
                 viewModel.showInitialDialog.collect { isVisible ->
                     if (isVisible) findNavController().navigate(R.id.welcomeDialogFragment)
                 }

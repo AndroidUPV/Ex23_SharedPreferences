@@ -20,8 +20,11 @@ import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import upv.dadm.ex23_sharedpreferences.R
 import javax.inject.Inject
 
@@ -43,12 +46,21 @@ class MainFragment @Inject constructor() : Fragment(R.layout.fragment_main), Men
         requireActivity().addMenuProvider(this, viewLifecycleOwner, Lifecycle.State.RESUMED)
 
         // Display the welcome dialog after checking the preferences set by the user
-        viewModel.showInitialDialog.observe(viewLifecycleOwner) { isVisible ->
-            if (isVisible) findNavController().navigate(R.id.welcomeDialogFragment)
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.showInitialDialog.collect { isVisible ->
+                    if (isVisible) findNavController().navigate(R.id.welcomeDialogFragment)
+                }
+            }
         }
-        // Update the action elements according to the preferences set by the user
-        viewModel.showDialogMenu.observe(viewLifecycleOwner) {
-            requireActivity().invalidateMenu()
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                // Update the action elements according to the preferences set by the user
+                viewModel.showDialogMenu.collect {
+                    requireActivity().invalidateMenu()
+                }
+            }
         }
     }
 
@@ -58,10 +70,8 @@ class MainFragment @Inject constructor() : Fragment(R.layout.fragment_main), Men
 
     // Allows the modification of elements of the already created menu before showing it
     override fun onPrepareMenu(menu: Menu) {
-        menu.findItem(R.id.mShowDialog).isVisible =
-            viewModel.showDialogMenu.value?.not() ?: false
-        menu.findItem(R.id.mHideDialog).isVisible =
-            viewModel.showDialogMenu.value ?: true
+        menu.findItem(R.id.mShowDialog).isVisible = viewModel.showDialogMenu.value.not()
+        menu.findItem(R.id.mHideDialog).isVisible = viewModel.showDialogMenu.value
         super.onPrepareMenu(menu)
     }
 

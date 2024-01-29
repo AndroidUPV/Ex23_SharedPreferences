@@ -11,8 +11,12 @@
 
 package upv.dadm.ex23_sharedpreferences.ui.welcome
 
-import androidx.lifecycle.*
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import upv.dadm.ex23_sharedpreferences.data.welcome.WelcomeSharedPreferencesRepository
 import javax.inject.Inject
@@ -26,28 +30,22 @@ class WelcomeViewModel @Inject constructor(
     private val welcomeSharedPreferencesRepository: WelcomeSharedPreferencesRepository
 ) : ViewModel() {
 
-    // Backing property for displaying the initial dialog (default empty until initialised)
-    private val _showInitialDialog = MutableLiveData<Boolean>()
-
     // Whether to show or hide the initial dialog
-    val showInitialDialog: LiveData<Boolean>
-        get() = _showInitialDialog
-
-    // Initialise the property for displaying the initial dialog
-    init {
-        // As it is a blocking operation it should be executed in a thread
-        viewModelScope.launch {
-            // Get the value from the repository
-            _showInitialDialog.value =
-                welcomeSharedPreferencesRepository.getInitialDialogVisibility()
-        }
+    val showInitialDialog = flow {
+        val initialDialogVisibility =
+            welcomeSharedPreferencesRepository.getInitialDialogVisibility()
+        emit(initialDialogVisibility)
     }
 
     // Whether to show the display or hide option menu
     // according to the preference selected by the user for displaying the initial dialog
     val showDialogMenu =
-        // Transform the received Flow into LiveData to update the UI in a lifecycle aware manner
-        welcomeSharedPreferencesRepository.getDialogVisibility().asLiveData()
+        // Transform the received Flow into StateFlow to update the UI in a lifecycle aware manner
+        welcomeSharedPreferencesRepository.getDialogVisibility().stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(),
+            initialValue = true
+        )
 
     /**
      * Sets the preference to display the initial dialog according to the user selection.

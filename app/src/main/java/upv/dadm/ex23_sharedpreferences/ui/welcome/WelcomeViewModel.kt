@@ -60,12 +60,14 @@ class WelcomeViewModel @Inject constructor(
         )
 
     /**
-     * Sets the preference to display the initial dialog according to the user selection.
+     * Sets the preference to display the initial dialog according to the user selection and
+     * hides the initial dialog.
      */
     fun setDialogVisibility(isVisible: Boolean) {
         // As it is a blocking operation it should be executed in a thread
         viewModelScope.launch {
             welcomeSharedPreferencesRepository.setDialogVisibility(isVisible)
+            _showInitialDialog.update { false }
         }
     }
 
